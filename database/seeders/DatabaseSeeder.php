@@ -2,24 +2,33 @@
 
 namespace Database\Seeders;
 
-use App\Models\User;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use App\Models\Category;
+use App\Models\Product;
 
 class DatabaseSeeder extends Seeder
 {
-    use WithoutModelEvents;
-
-    /**
-     * Seed the application's database.
-     */
     public function run(): void
     {
-        // User::factory(10)->create();
+        // 1) Buat minimal 3 kategori (sesuai tugas)
+        $categories = collect([
+            'Electronics',
+            'Fashion',
+            'Books',
+        ])->map(function (string $name) {
+            return Category::create(['name' => $name]);
+        });
 
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
-        ]);
+        // 2) Buat minimal 30 produk (sesuai tugas) TANPA factory, tapi pakai Faker
+        $faker = fake(); // helper Faker dari Laravel
+
+        for ($i = 1; $i <= 30; $i++) {
+            Product::create([
+                'category_id' => Category::inRandomOrder()->value('id'),
+                'name'        => $faker->words(3, true),
+                'description' => $faker->sentence(10),
+                'price'       => $faker->numberBetween(10000, 500000),
+            ]);
+        }
     }
 }
