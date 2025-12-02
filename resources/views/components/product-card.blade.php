@@ -1,25 +1,67 @@
-<div class="card h-100 shadow-sm">
-    <div class="card-body p-2">
 
-        <h5 class="card-title fs-6 fw-bold">{{ $product['name'] }}</h5>
 
-        <p class="card-text small mb-1">
-            {{ $product['description'] }}
+@props(['product'])
+
+<div class="card h-100 shadow-sm border-0">
+    <div class="card-body d-flex flex-column">
+
+        {{-- judul dan kategori --}}
+        <div class="d-flex justify-content-between align-items-start mb-2">
+            <h5 
+                class="card-title fs-6 fw-semibold mb-0 text-truncate" 
+                title="{{ $product->name }}"
+            >
+                {{ $product->name }}
+            </h5>
+
+            @if ($product->category)
+                <span class="badge bg-light text-muted border">
+                    {{ $product->category->name }}
+                </span>
+            @endif
+        </div>
+
+        {{-- deskrisi --}}
+        <p 
+            class="card-text small text-muted mb-2"
+            style="min-height: 2.8em; max-height: 2.8em; overflow: hidden;"
+        >
+            {{ $product->description }}
         </p>
 
-        <p class="card-text fw-bold small mb-2">
-            Price: Rp {{ number_format($product['price'], 0, ',', '.') }}
+        {{-- harga --}}
+        <p class="fw-bold mb-3 small">
+            Rp {{ number_format($product->price, 0, ',', '.') }}
         </p>
 
-        <div class="d-flex gap-2">
-            <a href="{{ route('products.show', $product['id']) }}" class="btn btn-sm btn-primary">
+        {{-- aksi --}}
+        <div class="mt-auto d-flex gap-1">
+            <a 
+                href="{{ route('products.show', $product->id) }}" 
+                class="btn btn-outline-secondary btn-sm"
+            >
                 View
             </a>
 
-            <a href="{{ route('products.edit', $product['id']) }}" class="btn btn-sm btn-warning">
+            <a 
+                href="{{ route('products.edit', $product->id) }}" 
+                class="btn btn-outline-primary btn-sm"
+            >
                 Edit
             </a>
-        </div>
 
+            {{-- Delete --}}
+            <form 
+                action="{{ route('products.destroy', $product->id) }}" 
+                method="POST" 
+                class="ms-auto"
+                onsubmit="return confirm('Are you sure you want to delete this product?');"
+            >
+                @csrf
+                <button type="submit" class="btn btn-outline-danger btn-sm">
+                    Delete
+                </button>
+            </form>
+        </div>
     </div>
 </div>
