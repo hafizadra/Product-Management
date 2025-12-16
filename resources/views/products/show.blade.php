@@ -1,21 +1,92 @@
-<x-layout title="Product Detail">
-    <h1 class="h3 mb-3">Product Detail</h1>
+<x-layout :title="$product->name . ' - Product Detail'">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            {{-- HEADER --}}
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h1 class="h5 mb-0">Product Detail</h1>
 
-    <div class="card">
-        <div class="card-body">
-            <h5 class="card-title">{{ $product['name'] }}</h5>
-            <p class="card-text">{{ $product['description'] }}</p>
-            <p class="card-text fw-bold">
-                Price: Rp {{ number_format($product['price'], 0, ',', '.') }}
-            </p>
+                <a href="{{ route('products') }}" class="btn btn-sm btn-outline-secondary">
+                    ← Back to list
+                </a>
+            </div>
 
-            <a href="{{ route('products') }}" class="btn btn-secondary me-2">
-                Back to list
-            </a>
+            {{-- DETAIL CARD --}}
+            <div class="card shadow-sm border-0">
+                <div class="card-body">
 
-            <a href="{{ route('products.edit', $product['id']) }}" class="btn btn-warning">
-                Edit
-            </a>
+                    <div class="d-flex justify-content-between align-items-start mb-2">
+                        <h2 class="h5 mb-0">
+                            {{ $product->name }}
+                        </h2>
+
+                        @if ($product->category)
+                            <span class="badge bg-light text-muted border">
+                                {{ $product->category->name }}
+                            </span>
+                        @endif
+                    </div>
+
+                    <p class="fw-bold mb-2">
+                        Price: Rp {{ number_format($product->price, 0, ',', '.') }}
+                    </p>
+
+                    <div class="mb-3">
+                        <h3 class="h6 text-muted mb-1">Description</h3>
+                        <p class="mb-0">
+                            {{ $product->description ?: 'No description provided.' }}
+                        </p>
+                    </div>
+
+                    <div class="mb-3 small text-muted">
+                        <div>Product ID: {{ $product->id }}</div>
+                        @if ($product->created_at)
+                            <div>Created at: {{ $product->created_at->format('Y-m-d H:i') }}</div>
+                        @endif
+                        @if ($product->updated_at)
+                            <div>Last updated: {{ $product->updated_at->format('Y-m-d H:i') }}</div>
+                        @endif
+                    </div>
+
+                    {{-- Aksi --}}
+                    <div class="d-flex gap-2 flex-wrap">
+
+                        <a
+                            href="{{ route('products.edit', $product->id) }}"
+                            class="btn btn-primary btn-sm"
+                        >
+                            Edit
+                        </a>
+
+                        {{-- Add to Cart (harus login) --}}
+                        @auth
+                            <form action="{{ route('cart.add', $product->id) }}" method="POST">
+                                @csrf
+                                <button type="submit" class="btn btn-success btn-sm">
+                                    Add to Cart
+                                </button>
+                            </form>
+                        @else
+                            <a href="{{ route('login') }}" class="btn btn-success btn-sm">
+                                Add to Cart
+                            </a>
+                        @endauth
+
+                        {{-- Delete --}}
+                        <form
+                            action="{{ route('products.destroy', $product->id) }}"
+                            method="POST"
+                            onsubmit="return confirm('Are you sure you want to delete this product?');"
+                        >
+                            @csrf
+                            <button type="submit" class="btn btn-outline-danger btn-sm">
+                                Delete
+                            </button>
+                        </form>
+
+                    </div>
+                </div>
+            </div>
+
         </div>
     </div>
 </x-layout>

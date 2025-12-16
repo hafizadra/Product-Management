@@ -3,107 +3,163 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Product;
+use App\Models\Category;
 
 class ProductController extends Controller
 {
-    // 1) fungsi data dummy
-    protected function dummyProducts()
+    /**
+     * INDEX — sort
+     */
+    public function index(Request $request)
     {
-        return [
-            ['id' => 1, 'name' => 'Product 1', 'description' => 'Desc 1', 'price' => 1000],
-            ['id' => 2, 'name' => 'Product 2', 'description' => 'Desc 2', 'price' => 2000],
-            ['id' => 3, 'name' => 'Product 3', 'description' => 'Desc 3', 'price' => 3000],
-            ['id' => 4, 'name' => 'Product 4', 'description' => 'Desc 4', 'price' => 4000],
-            ['id' => 5, 'name' => 'Product 5', 'description' => 'Desc 5', 'price' => 5000],
-            ['id' => 6, 'name' => 'Product 6', 'description' => 'Desc 6', 'price' => 6000],
-            ['id' => 7, 'name' => 'Product 7', 'description' => 'Desc 7', 'price' => 7000],
-            ['id' => 8, 'name' => 'Product 8', 'description' => 'Desc 8', 'price' => 8000],
-            ['id' => 9, 'name' => 'Product 9', 'description' => 'Desc 9', 'price' => 9000],
-            ['id' => 10, 'name' => 'Product 10', 'description' => 'Desc 10', 'price' => 10000],
-            ['id' => 11, 'name' => 'Product 11', 'description' => 'Desc 11', 'price' => 11000],
-            ['id' => 12, 'name' => 'Product 12', 'description' => 'Desc 12', 'price' => 12000],
-            ['id' => 13, 'name' => 'Product 13', 'description' => 'Desc 13', 'price' => 13000],
-            ['id' => 14, 'name' => 'Product 14', 'description' => 'Desc 14', 'price' => 14000],
-            ['id' => 15, 'name' => 'Product 15', 'description' => 'Desc 15', 'price' => 15000],
-            ['id' => 16, 'name' => 'Product 16', 'description' => 'Desc 16', 'price' => 16000],
-            ['id' => 17, 'name' => 'Product 17', 'description' => 'Desc 17', 'price' => 17000],
-            ['id' => 18, 'name' => 'Product 18', 'description' => 'Desc 18', 'price' => 18000],
-            ['id' => 19, 'name' => 'Product 19', 'description' => 'Desc 19', 'price' => 19000],
-            ['id' => 20, 'name' => 'Product 20', 'description' => 'Desc 20', 'price' => 20000],
-        ];
+        
+        $search   = $request->query('q');
+        $minPrice = $request->query('min_price');
+        $maxPrice = $request->query('max_price');
+        $sortBy   = $request->query('sort_by', 'name');   
+        $sortDir  = $request->query('sort_dir', 'asc');  
+
+        
+        $query = Product::query()->with('category'); 
+
+       
+        if (!empty($search)) {
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                  ->orWhere('description', 'like', "%{$search}%");
+            });
+        }
+
+      
+        if ($minPrice !== null && $minPrice !== '') {
+            $query->where('price', '>=', (int) $minPrice);
+        }
+
+        
+        if ($maxPrice !== null && $maxPrice !== '') {
+            $query->where('price', '<=', (int) $maxPrice);
+        }
+
+        
+        if (! in_array($sortBy, ['name', 'price'], true)) {
+            $sortBy = 'name';
+        }
+
+        if (! in_array($sortDir, ['asc', 'desc'], true)) {
+            $sortDir = 'asc';
+        }
+
+       
+        $products = $query->orderBy($sortBy, $sortDir)->get();
+
+        
+        $categories = Category::all();
+
+        
+        return view('products.list', compact(
+            'products',
+            'categories',
+            'search',
+            'minPrice',
+            'maxPrice',
+            'sortBy',
+            'sortDir'
+        ));
     }
 
-    // 2) fungsi index 
-    public function index()
-    {
-        $products = $this->dummyProducts();
-        return view('products.list', compact('products'));
-    }
-
-    // 3) fungsi create
+    /**
+     * CREATE 
+     */
     public function create()
     {
-        return view('products.form');
-    } 
-    
-    // 4) fungsi store
-    public function store(Request $request)
-    {
-        $request->validate([
-            'name' => 'required',
-            'description' => 'nullable',
-            'price' => 'required|numeric',
+        $categories = Category::all();
+
+       
+        return view('products.form', [
+            'categories' => $categories,
         ]);
-        return redirect()->route('products')->with('success', 'Product created successfully!');
     }
 
-    // 5) fungsi show
-    public function show($id)
+    /**
+     * STORE 
+     */
+    public function store(Request $request)
     {
-        $products = $this->dummyProducts();
-        $product = null;
-        foreach ($products as $p){
-            if ($p['id'] == $id){
-                $product = $p;
-                break;
-            }
-        }
+        
+        $validated = $request->validate([
+            'name'        => ['required', 'string', 'max:255'],
+            'description' => ['nullable', 'string'],
+            'price'       => ['required', 'numeric', 'min:0'],
+            'category_id' => ['required', 'exists:categories,id'],
+        ]);
 
-        if (!$product){
-            abort(404);
-        }
+        
+        Product::create($validated);
+
+        return redirect()
+            ->route('products')
+            ->with('success', 'Product created successfully.');
+    }
+
+    /**
+     * SHOW 
+     */
+    public function show(int $id)
+    {
+        $product = Product::with('category')->findOrFail($id);
+
         return view('products.show', compact('product'));
     }
 
-    // 6) fungsi form edit
-    public function edit($id)
+    /**
+     * EDIT 
+     */
+    public function edit(int $id)
     {
-        $products = $this->dummyProducts();
+        $product    = Product::findOrFail($id);
+        $categories = Category::all();
 
-        $product = null;
-        foreach ($products as $p){
-            if ($p['id'] == $id){
-                $product = $p;
-                break;
-            }
-        }
-
-        if (!$product){
-            abort(404);
-        }
-        
-        return view('products.form', compact('product'));
-    }
-
-    // 7) fungsi update
-    public function update(Request $request, $id)
-    {
-        $request->validate([
-            'name' => 'required',
-            'description' => 'nullable',
-            'price' => 'required|numeric',
+        return view('products.form', [
+            'product'    => $product,    
+            'categories' => $categories,
         ]);
-        return redirect()->route('products.show', $id)->with('success', 'Product updated successfully!');
     }
 
+    /**
+     * UPDATE 
+     */
+    public function update(Request $request, int $id)
+    {
+        
+        $validated = $request->validate([
+            'name'        => ['required', 'string', 'max:255'],
+            'description' => ['nullable', 'string'],
+            'price'       => ['required', 'numeric', 'min:0'],
+            'category_id' => ['required', 'exists:categories,id'],
+        ]);
+
+        $product = Product::findOrFail($id);
+
+        
+        $product->update($validated);
+
+        return redirect()
+            ->route('products')
+            ->with('success', 'Product updated successfully.');
+    }
+
+    /**
+     * DELETE 
+     */
+    public function destroy(int $id)
+    {
+        $product = Product::findOrFail($id);
+
+        $product->delete();
+
+        return redirect()
+            ->route('products')
+            ->with('success', 'Product deleted successfully.');
+    }
 }
