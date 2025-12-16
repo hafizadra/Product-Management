@@ -1,5 +1,3 @@
-
-
 <x-layout :title="$product->name . ' - Product Detail'">
     <div class="row justify-content-center">
         <div class="col-md-8 col-lg-6">
@@ -15,7 +13,7 @@
             {{-- DETAIL CARD --}}
             <div class="card shadow-sm border-0">
                 <div class="card-body">
-                    
+
                     <div class="d-flex justify-content-between align-items-start mb-2">
                         <h2 class="h5 mb-0">
                             {{ $product->name }}
@@ -28,12 +26,10 @@
                         @endif
                     </div>
 
-                    
                     <p class="fw-bold mb-2">
                         Price: Rp {{ number_format($product->price, 0, ',', '.') }}
                     </p>
 
-                    
                     <div class="mb-3">
                         <h3 class="h6 text-muted mb-1">Description</h3>
                         <p class="mb-0">
@@ -41,7 +37,6 @@
                         </p>
                     </div>
 
-                    
                     <div class="mb-3 small text-muted">
                         <div>Product ID: {{ $product->id }}</div>
                         @if ($product->created_at)
@@ -53,13 +48,28 @@
                     </div>
 
                     {{-- Aksi --}}
-                    <div class="d-flex gap-2">
-                        <a 
-                            href="{{ route('products.edit', $product->id) }}" 
+                    <div class="d-flex gap-2 flex-wrap">
+
+                        <a
+                            href="{{ route('products.edit', $product->id) }}"
                             class="btn btn-primary btn-sm"
                         >
                             Edit
                         </a>
+
+                        {{-- Add to Cart (harus login) --}}
+                        @auth
+                            <form action="{{ route('cart.add', $product->id) }}" method="POST">
+                                @csrf
+                                <button type="submit" class="btn btn-success btn-sm">
+                                    Add to Cart
+                                </button>
+                            </form>
+                        @else
+                            <a href="{{ route('login') }}" class="btn btn-success btn-sm">
+                                Add to Cart
+                            </a>
+                        @endauth
 
                         {{-- Delete --}}
                         <form
@@ -72,6 +82,7 @@
                                 Delete
                             </button>
                         </form>
+
                     </div>
                 </div>
             </div>
