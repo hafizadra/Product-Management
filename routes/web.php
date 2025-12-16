@@ -10,17 +10,30 @@ use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\OrderController;
 
 /*
-Home
+ Home
 */
-Route::get('/', [HomeController::class, 'index'])->name('home');
+Route::get('/', function () {
+    if (request()->user()) {
+        return redirect()->route('dashboard'); 
+    }
 
-// HOME USER (dashboard)
+    return app(HomeController::class)->index(); 
+})->name('home');
+
+/*
+Dashboard (User Home)
+*/
 Route::get('/home', [HomeController::class, 'dashboard'])
     ->middleware('auth')
     ->name('dashboard');
 
 /*
- Products 
+ Auth (Bootstrap UI)
+*/
+Auth::routes();
+
+/*
+Products
 */
 Route::controller(ProductController::class)
     ->prefix('products')
@@ -36,30 +49,17 @@ Route::controller(ProductController::class)
     });
 
 /*
-| Auth (Bootstrap UI)
-*/
-Auth::routes();
-
-/*
-| Dashboard (route default dari Auth UI)
-*/
-Route::get('/home', [HomeController::class, 'index'])->name('dashboard');
-
-/*
-| Cart + Checkout + Orders wajib login
+Cart + Checkout + Orders (auth)
 */
 Route::middleware('auth')->group(function () {
-    // CART
     Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
     Route::post('/cart/add/{product}', [CartController::class, 'add'])->name('cart.add');
     Route::post('/cart/update/{item}', [CartController::class, 'update'])->name('cart.update');
     Route::post('/cart/remove/{item}', [CartController::class, 'remove'])->name('cart.remove');
 
-    // CHECKOUT
     Route::get('/checkout', [CheckoutController::class, 'create'])->name('checkout.create');
     Route::post('/checkout', [CheckoutController::class, 'store'])->name('checkout.store');
 
-    // ORDERS
     Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
     Route::get('/orders/{order}', [OrderController::class, 'show'])->name('orders.show');
 });

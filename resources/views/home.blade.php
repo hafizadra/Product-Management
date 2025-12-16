@@ -56,21 +56,27 @@
                                 <div class="col-4">
                                     <div class="p-3 rounded-4 bg-dark border border-secondary text-center">
                                         <div class="text-white-50 small">Cart</div>
-                                        <div class="h4 fw-semibold mb-0">{{ $cartItems ?? 0 }}</div>
+                                        <div class="h4 fw-semibold mb-0 text-white">
+                                            {{ $cartItems ?? 0 }}
+                                        </div>
                                     </div>
                                 </div>
 
                                 <div class="col-4">
                                     <div class="p-3 rounded-4 bg-dark border border-secondary text-center">
                                         <div class="text-white-50 small">Orders</div>
-                                        <div class="h4 fw-semibold mb-0">{{ $ordersCount ?? 0 }}</div>
+                                        <div class="h4 fw-semibold mb-0 text-white">
+                                            {{ $ordersCount ?? 0 }}
+                                        </div>
                                     </div>
                                 </div>
 
                                 <div class="col-4">
                                     <div class="p-3 rounded-4 bg-dark border border-secondary text-center">
                                         <div class="text-white-50 small">Pending</div>
-                                        <div class="h4 fw-semibold mb-0">{{ $pendingOrders ?? 0 }}</div>
+                                        <div class="h4 fw-semibold mb-0 text-white">
+                                            {{ $pendingOrders ?? 0 }}
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -79,7 +85,9 @@
 
                             <div class="d-flex align-items-center justify-content-between">
                                 <div class="text-white-50 small">Signed in as</div>
-                                <div class="fw-semibold">{{ Auth::user()->email }}</div>
+                                <div class="fw-semibold text-white">
+                                    {{ Auth::user()->email }}
+                                </div>
                             </div>
                         @else
                             <h6 class="text-uppercase text-white-50 mb-3">Quick Stats</h6>
@@ -88,14 +96,18 @@
                                 <div class="col-6">
                                     <div class="p-3 rounded-4 bg-dark border border-secondary">
                                         <div class="text-white-50 small">Products</div>
-                                        <div class="h4 fw-semibold mb-0">{{ $totalProducts ?? '—' }}</div>
+                                        <div class="h4 fw-semibold mb-0 text-white">
+                                            {{ $totalProducts ?? '—' }}
+                                        </div>
                                     </div>
                                 </div>
 
                                 <div class="col-6">
                                     <div class="p-3 rounded-4 bg-dark border border-secondary">
                                         <div class="text-white-50 small">Categories</div>
-                                        <div class="h4 fw-semibold mb-0">{{ $totalCategories ?? '—' }}</div>
+                                        <div class="h4 fw-semibold mb-0 text-white">
+                                            {{ $totalCategories ?? '—' }}
+                                        </div>
                                     </div>
                                 </div>
                             </div>

@@ -1,132 +1,111 @@
 <x-layout title="Your Cart">
-    <div class="container">
-        <h1 class="h4 fw-semibold mb-4">Shopping Cart</h1>
 
-        @if($cart->items->isEmpty())
-            <div class="alert alert-light border">
-                Your cart is empty.
-            </div>
-        @else
-            <div class="row g-3">
-                {{-- LEFT: Cart Items --}}
-                <div class="col-md-8">
-                    @foreach($cart->items as $item)
-                        <div class="card border-0 shadow-sm rounded-4 mb-3">
-                            <div class="card-body">
-                                <div class="d-flex justify-content-between align-items-start">
-                                    <div>
-                                        <h6 class="fw-semibold mb-1">{{ $item->product->name }}</h6>
+<div class="container">
 
-                                        <p class="text-muted small mb-2">
-                                            {{ $item->product->description }}
-                                        </p>
+    <h1 class="h4 fw-semibold mb-4">Shopping Cart</h1>
 
-                                        <div class="text-muted small">
-                                            Price: Rp {{ number_format($item->price) }}
-                                        </div>
+    @if($cart->items->isEmpty())
+        <div class="alert alert-light border">
+            Your cart is empty.
+        </div>
+    @else
+
+        <div class="row g-3">
+
+            {{-- LEFT: Cart Items --}}
+            <div class="col-md-8">
+
+                @foreach($cart->items as $item)
+                    <div class="card border-0 shadow-sm rounded-4 mb-3">
+                        <div class="card-body">
+
+                            <div class="d-flex justify-content-between align-items-start">
+
+                                <div>
+                                    <h6 class="fw-semibold mb-1">
+                                        {{ $item->product->name }}
+                                    </h6>
+
+                                    <p class="text-muted small mb-2">
+                                        {{ $item->product->description }}
+                                    </p>
+
+                                    <div class="text-muted small">
+                                        Price: Rp {{ number_format($item->price) }}
                                     </div>
-
-                                    {{-- Remove --}}
-                                    <form method="POST" action="{{ route('cart.remove', $item) }}">
-                                        @csrf
-                                        <button class="btn btn-sm btn-outline-danger">
-                                            Remove
-                                        </button>
-                                    </form>
                                 </div>
 
-                                {{-- Update Qty (auto submit) --}}
-                                <form
-                                    method="POST"
-                                    action="{{ route('cart.update', $item) }}"
-                                    class="mt-3 d-flex align-items-center gap-2 js-qty-form"
-                                >
+                                {{-- Remove --}}
+                                <form method="POST"
+                                      action="{{ route('cart.remove', $item) }}">
                                     @csrf
-
-                                    <label class="small text-muted mb-0">Qty</label>
-
-                                    <input
-                                        type="number"
-                                        name="qty"
-                                        value="{{ $item->qty }}"
-                                        min="1"
-                                        max="999"
-                                        class="form-control form-control-sm js-qty-input"
-                                        style="width: 90px"
-                                        inputmode="numeric"
-                                    >
-
-                                    <span class="small text-muted js-saving d-none">Saving…</span>
+                                    <button class="btn btn-sm btn-outline-danger">
+                                        Remove
+                                    </button>
                                 </form>
-                            </div>
-                        </div>
-                    @endforeach
-                </div>
 
-                {{-- RIGHT: Summary --}}
-                <div class="col-md-4">
-                    <div class="card border-0 shadow-sm rounded-4">
-                        <div class="card-body">
-                            <h6 class="fw-semibold mb-3">Summary</h6>
-
-                            <div class="d-flex justify-content-between mb-2">
-                                <span class="text-muted">Subtotal</span>
-                                <span id="subtotal">Rp {{ number_format($subtotal) }}</span>
                             </div>
 
-                            <hr>
+                            {{-- Update Qty --}}
+                            <form method="POST"
+                                  action="{{ route('cart.update', $item) }}"
+                                  class="mt-3 d-flex align-items-center gap-2">
+                                @csrf
 
-                            <div class="d-flex justify-content-between fw-semibold">
-                                <span>Total</span>
-                                <span id="total">Rp {{ number_format($total) }}</span>
-                            </div>
+                                <label class="small text-muted">Qty</label>
+                                <input
+                                    type="number"
+                                    name="qty"
+                                    value="{{ $item->qty }}"
+                                    min="1"
+                                    class="form-control form-control-sm"
+                                    style="width: 80px"
+                                >
 
-                            <a href="{{ route('checkout.create') }}" class="btn btn-primary w-100 mt-4">
-                                Proceed to Checkout
-                            </a>
+                                <button class="btn btn-sm btn-outline-primary">
+                                    Update
+                                </button>
+                            </form>
+
                         </div>
                     </div>
-                </div>
+                @endforeach
+
             </div>
-        @endif
-    </div>
 
-    {{-- Auto submit qty (debounce) --}}
-    <script>
-        (function () {
-            const forms = document.querySelectorAll('.js-qty-form');
+            {{-- RIGHT: Summary --}}
+            <div class="col-md-4">
 
-            forms.forEach(form => {
-                const input = form.querySelector('.js-qty-input');
-                const saving = form.querySelector('.js-saving');
+                <div class="card border-0 shadow-sm rounded-4">
+                    <div class="card-body">
 
-                let timer = null;
-                let lastValue = input.value;
+                        <h6 class="fw-semibold mb-3">Summary</h6>
 
-                function submitForm() {
-                    if (input.value === lastValue) return;
+                        <div class="d-flex justify-content-between mb-2">
+                            <span class="text-muted">Subtotal</span>
+                            <span>Rp {{ number_format($subtotal) }}</span>
+                        </div>
 
-                    const val = parseInt(input.value, 10);
-                    if (Number.isNaN(val) || val < 1) {
-                        input.value = lastValue;
-                        return;
-                    }
+                        <hr>
 
-                    lastValue = input.value;
+                        <div class="d-flex justify-content-between fw-semibold">
+                            <span>Total</span>
+                            <span>Rp {{ number_format($total) }}</span>
+                        </div>
 
-                    if (saving) saving.classList.remove('d-none');
-                    form.submit(); 
+                        <a href="{{ route('checkout.create') }}" class="btn btn-primary w-100 mt-4">
+                            Proceed to Checkout
+                        </a>
 
-                input.addEventListener('input', () => {
-                    clearTimeout(timer);
-                    timer = setTimeout(submitForm, 500);
-                });
+                    </div>
+                </div>
 
-                input.addEventListener('change', () => {
-                    clearTimeout(timer);
-                    submitForm();
-                });
-            });
-        })();
-    </script>
+            </div>
+
+        </div>
+
+    @endif
+
+</div>
+
 </x-layout>
