@@ -21,15 +21,20 @@
 
                         <div class="mb-3">
                             <label class="form-label">Shipping Address</label>
-                            <textarea
-                                name="shipping_address"
-                                rows="3"
-                                class="form-control @error('shipping_address') is-invalid @enderror"
-                                required
-                            >{{ old('shipping_address') }}</textarea>
-                            @error('shipping_address')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
+                            <div class="border rounded-3 p-3 bg-light">
+                                @if ($defaultShipping)
+                                    <p class="mb-2 small">
+                                        {!! nl2br(e($defaultShipping)) !!}
+                                    </p>
+                                    <a href="{{ route('profile.addresses.index') }}" class="text-decoration-none small">
+                                        Kelola melalui Daftar Alamat →
+                                    </a>
+                                @else
+                                    <div class="alert alert-warning small mb-0">
+                                        Anda belum memiliki alamat default. <a href="{{ route('profile.addresses.index') }}">Tambahkan alamat</a> sebelum melanjutkan checkout.
+                                    </div>
+                                @endif
+                            </div>
                         </div>
 
                         <div class="mb-4">
@@ -49,8 +54,8 @@
                             @enderror
                         </div>
 
-                        <button class="btn btn-primary rounded-pill px-4">
-                            Place Order
+                        <button class="btn btn-primary rounded-pill px-4" {{ $defaultShipping ? '' : 'disabled' }}>
+                            {{ $defaultShipping ? 'Place Order' : 'Lengkapi alamat di profil' }}
                         </button>
 
                     </form>

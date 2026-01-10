@@ -1,20 +1,20 @@
-
-
 <x-layout title="Product List">
 
     {{-- HEADER --}}
     <div class="d-flex justify-content-between align-items-center mb-2">
         <h1 class="h6 mb-0">Products</h1>
 
-        <a href="{{ route('products.create') }}" class="btn btn-sm btn-primary">
-            Add new product
-        </a>
+        @if (auth()->user()?->is_admin)
+            <a href="{{ route('admin.products.index') }}" class="btn btn-sm btn-outline-secondary">
+                Kelola stok
+            </a>
+        @endif
     </div>
 
     {{-- FILTER DAN SEARCH --}}
-    <form 
-        method="GET" 
-        action="{{ route('products') }}" 
+    <form
+        method="GET"
+        action="{{ route('products') }}"
         class="border-bottom pb-3 mb-3"
     >
         <div class="row g-2 align-items-center small">
@@ -22,9 +22,9 @@
             {{-- SEARCH --}}
             <div class="col-12 col-md-4">
                 <label class="form-label mb-1">Search</label>
-                <input 
-                    type="text" 
-                    name="q" 
+                <input
+                    type="text"
+                    name="q"
                     class="form-control form-control-sm"
                     placeholder="Name or description"
                     value="{{ $search }}"
@@ -34,9 +34,9 @@
             {{-- MIN PRICE --}}
             <div class="col-6 col-md-2">
                 <label class="form-label mb-1">Min price</label>
-                <input 
-                    type="number" 
-                    name="min_price" 
+                <input
+                    type="number"
+                    name="min_price"
                     class="form-control form-control-sm"
                     min="0"
                     value="{{ $minPrice }}"
@@ -46,17 +46,30 @@
             {{-- MAX PRICE --}}
             <div class="col-6 col-md-2">
                 <label class="form-label mb-1">Max price</label>
-                <input 
-                    type="number" 
-                    name="max_price" 
+                <input
+                    type="number"
+                    name="max_price"
                     class="form-control form-control-sm"
                     min="0"
                     value="{{ $maxPrice }}"
                 >
             </div>
 
-            {{-- SORT BY --}}
+            {{-- ✅ CATEGORY --}}
             <div class="col-6 col-md-2">
+                <label class="form-label mb-1">Category</label>
+                <select name="category_id" class="form-select form-select-sm">
+                    <option value="">All</option>
+                    @foreach ($categories as $cat)
+                        <option value="{{ $cat->id }}" {{ (string)$categoryId === (string)$cat->id ? 'selected' : '' }}>
+                            {{ $cat->name }}
+                        </option>
+                    @endforeach
+                </select>
+            </div>
+
+            {{-- SORT BY --}}
+            <div class="col-6 col-md-1">
                 <label class="form-label mb-1">Sort by</label>
                 <select name="sort_by" class="form-select form-select-sm">
                     <option value="name"  {{ $sortBy === 'name' ? 'selected' : '' }}>Name</option>
@@ -65,12 +78,47 @@
             </div>
 
             {{-- ORDER --}}
-            <div class="col-6 col-md-2">
+            <div class="col-6 col-md-1">
                 <label class="form-label mb-1">Order</label>
                 <select name="sort_dir" class="form-select form-select-sm">
                     <option value="asc"  {{ $sortDir === 'asc' ? 'selected' : '' }}>Asc</option>
                     <option value="desc" {{ $sortDir === 'desc' ? 'selected' : '' }}>Desc</option>
                 </select>
+            </div>
+        </div>
+
+        <div class="row g-2 align-items-center small mt-1">
+            <div class="col-12 col-md-4">
+                <label class="form-label mb-1">Author</label>
+                <input
+                    type="text"
+                    name="author"
+                    class="form-control form-control-sm"
+                    placeholder="e.g. Tere Liye"
+                    value="{{ $author }}"
+                >
+            </div>
+
+            <div class="col-6 col-md-4">
+                <label class="form-label mb-1">Publisher</label>
+                <input
+                    type="text"
+                    name="publisher"
+                    class="form-control form-control-sm"
+                    placeholder="Publisher name"
+                    value="{{ $publisher }}"
+                >
+            </div>
+
+            <div class="col-6 col-md-4">
+                <label class="form-label mb-1">ISBN</label>
+                <input
+                    type="text"
+                    name="isbn"
+                    class="form-control form-control-sm"
+                    placeholder="978..."
+                    value="{{ $isbn }}"
+                >
             </div>
         </div>
 
@@ -91,6 +139,18 @@
         </div>
         <div>
             Sort: {{ ucfirst($sortBy) }} / {{ strtoupper($sortDir) }}
+            @if(!empty($categoryId))
+                | Category: {{ optional($categories->firstWhere('id', (int)$categoryId))->name ?? 'Selected' }}
+            @endif
+            @if($author)
+                | Author: {{ $author }}
+            @endif
+            @if($publisher)
+                | Publisher: {{ $publisher }}
+            @endif
+            @if($isbn)
+                | ISBN: {{ $isbn }}
+            @endif
         </div>
     </div>
 

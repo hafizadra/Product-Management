@@ -16,6 +16,9 @@
             <div class="col-md-8">
 
                 @foreach($cart->items as $item)
+                    @php
+                        $product = $item->product;
+                    @endphp
                     <div class="card border-0 shadow-sm rounded-4 mb-3">
                         <div class="card-body">
 
@@ -23,16 +26,25 @@
 
                                 <div>
                                     <h6 class="fw-semibold mb-1">
-                                        {{ $item->product->name }}
+                                        {{ $product->name ?? 'Product unavailable' }}
                                     </h6>
 
-                                    <p class="text-muted small mb-2">
-                                        {{ $item->product->description }}
-                                    </p>
+                                    @if ($product)
+                                        <p class="text-muted small mb-2">
+                                            {{ $product->description }}
+                                        </p>
 
-                                    <div class="text-muted small">
-                                        Price: Rp {{ number_format($item->price) }}
-                                    </div>
+                                        <div class="text-muted small">
+                                            Price: Rp {{ number_format($item->price) }}
+                                        </div>
+                                        <div class="text-muted small">
+                                            Stock available: {{ $product->stock }}
+                                        </div>
+                                    @else
+                                        <p class="text-danger small mb-0">
+                                            Produk ini sudah tidak tersedia. Silakan hapus dari cart.
+                                        </p>
+                                    @endif
                                 </div>
 
                                 {{-- Remove --}}
@@ -60,9 +72,10 @@
                                     min="1"
                                     class="form-control form-control-sm"
                                     style="width: 80px"
+                                    {{ $product ? '' : 'disabled' }}
                                 >
 
-                                <button class="btn btn-sm btn-outline-primary">
+                                <button class="btn btn-sm btn-outline-primary" {{ $product ? '' : 'disabled' }}>
                                     Update
                                 </button>
                             </form>

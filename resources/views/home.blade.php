@@ -22,12 +22,18 @@
                     </a>
 
                     @auth
-                        <a href="{{ route('cart.index') }}" class="btn btn-outline-light">
-                            View Cart
-                        </a>
-                        <a href="{{ route('orders.index') }}" class="btn btn-outline-light">
-                            My Orders
-                        </a>
+                        @if (Auth::user()->is_admin)
+                            <a href="{{ route('admin.dashboard') }}" class="btn btn-outline-light">
+                                Open Admin
+                            </a>
+                        @else
+                            <a href="{{ route('cart.index') }}" class="btn btn-outline-light">
+                                View Cart
+                            </a>
+                            <a href="{{ route('orders.index') }}" class="btn btn-outline-light">
+                                My Orders
+                            </a>
+                        @endif
                     @else
                         <a href="{{ route('login') }}" class="btn btn-outline-light">
                             Login
@@ -147,6 +153,15 @@
                     <div class="card border-0 shadow-sm rounded-4 h-100">
                         <div class="card-body p-4 d-flex flex-column">
 
+                            @if ($p->image_url)
+                                <img
+                                    src="{{ $p->image_url }}"
+                                    alt="{{ $p->name }}"
+                                    class="img-fluid rounded mb-3"
+                                    style="max-height: 160px; object-fit: cover;"
+                                >
+                            @endif
+
                             <div class="d-flex justify-content-between align-items-start">
                                 <div>
                                     <div class="text-muted small mb-1">
@@ -173,7 +188,12 @@
                                 <div class="fw-semibold">
                                     Rp {{ number_format($p->price ?? 0) }}
                                 </div>
-
+                                <div class="text-muted small text-end">
+                                    <div>{{ $p->author ?? 'Unknown author' }}</div>
+                                    @if ($p->isbn)
+                                        <div>ISBN: {{ $p->isbn }}</div>
+                                    @endif
+                                </div>
                                 <a href="{{ route('products.show', $p->id) }}" class="btn btn-sm btn-outline-primary">
                                     Details
                                 </a>
