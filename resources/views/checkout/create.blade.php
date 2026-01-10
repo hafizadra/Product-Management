@@ -1,13 +1,38 @@
+@push('styles')
+    @once
+        <style>
+            .checkout-shell {
+                background: #f8f9fa;
+                border-radius: 1.5rem;
+                padding: 1.5rem;
+                border: 1px solid rgba(15, 23, 42, 0.06);
+            }
+            .checkout-shell .card {
+                border-radius: 1.25rem;
+                transition: transform 0.2s ease, box-shadow 0.2s ease;
+            }
+            .checkout-shell .card:hover {
+                transform: translateY(-4px);
+                box-shadow: 0 1rem 2rem rgba(15, 23, 42, 0.12);
+            }
+        </style>
+    @endonce
+@endpush
+
 <x-layout title="Checkout">
 
-    <div class="d-flex justify-content-between align-items-center mb-3">
-        <h1 class="h6 mb-0">Checkout</h1>
-        <a href="{{ route('cart.index') }}" class="btn btn-sm btn-outline-secondary">
-            ← Back to cart
-        </a>
-    </div>
+    <div class="checkout-shell mb-4">
+        <div class="d-flex justify-content-between flex-wrap gap-2 align-items-center mb-4">
+            <div>
+                <h1 class="h5 fw-semibold mb-0">Checkout</h1>
+                <p class="text-muted small mb-0">Provide shipping address and payment.</p>
+            </div>
+            <a href="{{ route('cart.index') }}" class="btn btn-sm btn-outline-secondary rounded-pill">
+                ← Back to cart
+            </a>
+        </div>
 
-    <div class="row g-3">
+        <div class="row g-3">
 
         {{-- LEFT: Form --}}
         <div class="col-md-7">
@@ -98,6 +123,7 @@
             </div>
         </div>
 
+        </div>
     </div>
 
 </x-layout>
