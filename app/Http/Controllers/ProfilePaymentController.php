@@ -12,9 +12,9 @@ class ProfilePaymentController extends Controller
         $user = $request->user();
 
         return view('profile.payment', [
-            'user' => $user,
-            'sidebar' => ProfileSidebar::data($user),
-            'pageTitle' => 'Informasi Pembayaran',
+            'user'      => $user,
+            'sidebar'   => ProfileSidebar::data($user),
+            'pageTitle' => 'Payment Information',
         ]);
     }
 
@@ -33,7 +33,7 @@ class ProfilePaymentController extends Controller
             ->route('profile.payment.edit')
             ->with('flash', [
                 'type' => 'success',
-                'message' => 'Informasi pembayaran berhasil disimpan.',
+                'message' => 'Payment information saved successfully.',
             ]);
     }
 }

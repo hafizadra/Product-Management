@@ -1,4 +1,9 @@
 <x-layout title="Welcome back, Admin">
+    <nav aria-label="breadcrumb" class="small text-muted mb-3">
+        <ol class="breadcrumb mb-0">
+            <li class="breadcrumb-item active" aria-current="page">Dashboard</li>
+        </ol>
+    </nav>
     <div class="p-4 p-md-5 mb-4 rounded-4 bg-dark text-white shadow-sm">
         <div class="row g-4 align-items-center">
             <div class="col-lg-7">
@@ -148,7 +153,16 @@
                     </div>
                 </div>
             @empty
-                <p class="text-muted small px-3 py-4 mb-0">Belum ada order.</p>
+                <div class="text-center text-muted px-3 py-5">
+                    <div class="mb-2">
+                        <svg width="36" height="36" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M4 7h16l-2 10H6L4 7z" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M9 11v2" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+                            <path d="M15 11v2" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+                        </svg>
+                    </div>
+                    <p class="small mb-0">No orders yet. New orders will show up here.</p>
+                </div>
             @endforelse
         </div>
     </div>
@@ -172,7 +186,15 @@
                     </a>
                 </div>
             @empty
-                <p class="text-muted small px-3 py-4 mb-0">Great! No low stock alerts.</p>
+                <div class="text-center text-muted px-3 py-5">
+                    <div class="mb-2">
+                        <svg width="36" height="36" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M4 4h16v12a2 2 0 01-2 2H6a2 2 0 01-2-2V4z" stroke="currentColor" stroke-width="1.4"/>
+                            <path d="M8 16v2a2 2 0 002 2h4a2 2 0 002-2v-2" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+                        </svg>
+                    </div>
+                    <p class="small mb-0">Great! No low stock alerts.</p>
+                </div>
             @endforelse
         </div>
     </div>

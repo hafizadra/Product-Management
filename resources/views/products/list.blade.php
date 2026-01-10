@@ -119,24 +119,31 @@
     </div>
 
     {{-- INFO RINGKAS --}}
-    <div class="d-flex justify-content-between align-items-center mb-3 small text-muted">
-        <div>
-            {{ $products->count() }} product(s) found
-        </div>
-        <div>
-            Sort: {{ ucfirst($sortBy) }} / {{ strtoupper($sortDir) }}
-            @if(!empty($categoryId))
-                | Category: {{ optional($categories->firstWhere('id', (int)$categoryId))->name ?? 'Selected' }}
-            @endif
-            @if($author)
-                | Author: {{ $author }}
-            @endif
-            @if($publisher)
-                | Publisher: {{ $publisher }}
-            @endif
-            @if($isbn)
-                | ISBN: {{ $isbn }}
-            @endif
+    <div class="card border-0 shadow-sm rounded-4 mb-4">
+        <div class="card-body d-flex flex-wrap justify-content-between align-items-center gap-3 small text-muted">
+            <div class="d-flex align-items-center gap-2">
+                <span class="badge text-bg-primary-subtle text-primary rounded-pill px-3 py-2">
+                    {{ $products->count() }} result{{ $products->count() === 1 ? '' : 's' }}
+                </span>
+                <div>
+                    Showing items based on your filters.
+                </div>
+            </div>
+            <div class="text-muted">
+                Sort: <strong>{{ ucfirst($sortBy) }}</strong> / <strong>{{ strtoupper($sortDir) }}</strong>
+                @if(!empty($categoryId))
+                    <span class="ms-2">Category: {{ optional($categories->firstWhere('id', (int)$categoryId))->name ?? 'Selected' }}</span>
+                @endif
+                @if($author)
+                    <span class="ms-2">Author: {{ $author }}</span>
+                @endif
+                @if($publisher)
+                    <span class="ms-2">Publisher: {{ $publisher }}</span>
+                @endif
+                @if($isbn)
+                    <span class="ms-2">ISBN: {{ $isbn }}</span>
+                @endif
+            </div>
         </div>
     </div>
 

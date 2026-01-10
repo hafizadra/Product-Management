@@ -2,27 +2,34 @@
     $isEdit = isset($product) && $product->exists;
 @endphp
 
-<x-layout :title="$isEdit ? 'Edit Produk - ' . $product->name : 'Produk Baru'">
+<x-layout :title="$isEdit ? 'Edit Product - ' . $product->name : 'New Product'">
+    <nav aria-label="breadcrumb" class="small text-muted mb-3">
+        <ol class="breadcrumb mb-0">
+            <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Dashboard</a></li>
+            <li class="breadcrumb-item"><a href="{{ route('admin.products.index') }}">Products</a></li>
+            <li class="breadcrumb-item active" aria-current="page">{{ $isEdit ? 'Edit Product' : 'Add Product' }}</li>
+        </ol>
+    </nav>
     <div class="row justify-content-center">
         <div class="col-md-8 col-lg-6">
             <div class="d-flex justify-content-between align-items-center mb-3">
                 <div>
                     <h1 class="h5 mb-0">
-                        {{ $isEdit ? 'Edit Produk' : 'Tambah Produk' }}
+                        {{ $isEdit ? 'Edit Product' : 'Add Product' }}
                     </h1>
                     <p class="text-muted small mb-0">
-                        Pastikan data, harga, dan stok sesuai kondisi terbaru.
+                        Keep product data, pricing, and stock accurate.
                     </p>
                 </div>
 
                 <a href="{{ route('admin.products.index') }}" class="btn btn-sm btn-outline-secondary">
-                    ← Kembali
+                    ← Back
                 </a>
             </div>
 
             @if ($errors->any())
                 <div class="alert alert-danger small">
-                    <strong>Periksa kembali data yang diisi:</strong>
+                    <strong>Please review the data:</strong>
                     <ul class="mb-0 mt-1">
                         @foreach ($errors->all() as $error)
                             <li>{{ $error }}</li>
@@ -45,7 +52,7 @@
                         @endif
 
                         <div>
-                            <label class="form-label fw-semibold">Nama Produk</label>
+                            <label class="form-label fw-semibold">Product Name</label>
                             <input
                                 type="text"
                                 name="name"
@@ -87,7 +94,7 @@
                         </div>
 
                         <div>
-                            <label class="form-label fw-semibold">Deskripsi</label>
+                            <label class="form-label fw-semibold">Description</label>
                             <textarea
                                 name="description"
                                 rows="3"
@@ -98,7 +105,7 @@
 
                         <div class="row g-3">
                             <div class="col-md-6">
-                                <label class="form-label fw-semibold">Harga (Rp)</label>
+                                <label class="form-label fw-semibold">Price (Rp)</label>
                                 <input
                                     type="number"
                                     name="price"
@@ -109,7 +116,7 @@
                                 >
                             </div>
                             <div class="col-md-6">
-                                <label class="form-label fw-semibold">Stok</label>
+                                <label class="form-label fw-semibold">Stock</label>
                                 <input
                                     type="number"
                                     name="stock"
@@ -122,9 +129,9 @@
                         </div>
 
                         <div>
-                            <label class="form-label fw-semibold">Kategori</label>
+                            <label class="form-label fw-semibold">Category</label>
                             <select name="category_id" class="form-select" required>
-                                <option value="">-- Pilih Kategori --</option>
+                                <option value="">-- Select Category --</option>
                                 @foreach ($categories as $category)
                                     <option
                                         value="{{ $category->id }}"
@@ -137,7 +144,7 @@
                         </div>
 
                         <div>
-                            <label class="form-label fw-semibold">Foto Produk</label>
+                            <label class="form-label fw-semibold">Product Image</label>
                             <input
                                 type="file"
                                 name="image"
@@ -162,7 +169,7 @@
 
                         <div class="d-flex justify-content-end">
                             <button type="submit" class="btn btn-primary">
-                                {{ $isEdit ? 'Simpan perubahan' : 'Simpan produk' }}
+                                {{ $isEdit ? 'Save changes' : 'Create product' }}
                             </button>
                         </div>
                     </form>

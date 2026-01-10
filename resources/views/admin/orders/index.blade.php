@@ -1,9 +1,15 @@
 <x-layout title="Admin · Orders">
+    <nav aria-label="breadcrumb" class="small text-muted mb-3">
+        <ol class="breadcrumb mb-0">
+            <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Dashboard</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Orders</li>
+        </ol>
+    </nav>
     <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
         <div>
             <h1 class="h5 mb-1">Orders</h1>
             <p class="text-muted small mb-0">
-                Pantau dan proses semua pesanan pengguna dari satu tempat.
+                Track and process every user order from a single workspace.
             </p>
         </div>
 
@@ -81,8 +87,14 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="6" class="text-center text-muted py-4">
-                                No orders yet.
+                            <td colspan="6" class="text-center text-muted py-5">
+                                <div class="mb-2">
+                                    <svg width="36" height="36" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M6 4h12l2 4H4l2-4z" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+                                        <path d="M6 8h12v10a2 2 0 01-2 2H8a2 2 0 01-2-2V8z" stroke="currentColor" stroke-width="1.4"/>
+                                    </svg>
+                                </div>
+                                <p class="small mb-0">No orders yet.</p>
                             </td>
                         </tr>
                     @endforelse

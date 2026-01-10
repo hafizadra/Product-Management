@@ -15,7 +15,7 @@ class ProfileSecurityController extends Controller
 
         return view('profile.security', [
             'sidebar'   => ProfileSidebar::data($user),
-            'pageTitle' => 'Keamanan Akun',
+            'pageTitle' => 'Account Security',
         ]);
     }
 
@@ -30,10 +30,10 @@ class ProfileSecurityController extends Controller
 
         if (!Hash::check($data['current_password'], $user->password)) {
             return back()
-                ->withErrors(['current_password' => 'Password saat ini tidak sesuai.'])
+                ->withErrors(['current_password' => 'The current password does not match our records.'])
                 ->with('flash', [
                     'type' => 'danger',
-                    'message' => 'Password saat ini tidak sesuai.',
+                    'message' => 'The current password does not match our records.',
                 ]);
         }
 
@@ -45,7 +45,7 @@ class ProfileSecurityController extends Controller
             ->route('profile.security.index')
             ->with('flash', [
                 'type' => 'success',
-                'message' => 'Password berhasil diperbarui.',
+                'message' => 'Password updated successfully.',
             ]);
     }
 }

@@ -1,9 +1,16 @@
 <x-layout :title="'Order #' . $order->id">
+    <nav aria-label="breadcrumb" class="small text-muted mb-3">
+        <ol class="breadcrumb mb-0">
+            <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Dashboard</a></li>
+            <li class="breadcrumb-item"><a href="{{ route('admin.orders.index') }}">Orders</a></li>
+            <li class="breadcrumb-item active" aria-current="page">#{{ $order->id }}</li>
+        </ol>
+    </nav>
     <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
         <div>
             <h1 class="h5 mb-1">Order #{{ $order->id }}</h1>
             <p class="text-muted small mb-0">
-                Dipesan pada {{ $order->created_at?->format('d M Y H:i') }}
+                Placed on {{ $order->created_at?->format('d M Y H:i') }}
             </p>
         </div>
 

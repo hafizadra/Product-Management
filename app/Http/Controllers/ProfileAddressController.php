@@ -18,7 +18,7 @@ class ProfileAddressController extends Controller
                 ->latest()
                 ->get(),
             'sidebar'   => ProfileSidebar::data($user),
-            'pageTitle' => 'Daftar Alamat',
+            'pageTitle' => 'Address Book',
         ]);
     }
 
@@ -39,7 +39,7 @@ class ProfileAddressController extends Controller
             ->route('profile.addresses.index')
             ->with('flash', [
                 'type' => 'success',
-                'message' => 'Alamat baru berhasil ditambahkan.',
+                'message' => 'Address added successfully.',
             ]);
     }
 
@@ -56,7 +56,7 @@ class ProfileAddressController extends Controller
             ->route('profile.addresses.index')
             ->with('flash', [
                 'type' => 'success',
-                'message' => 'Alamat berhasil diperbarui.',
+                'message' => 'Address updated successfully.',
             ]);
     }
 
@@ -81,7 +81,7 @@ class ProfileAddressController extends Controller
             ->route('profile.addresses.index')
             ->with('flash', [
                 'type' => 'success',
-                'message' => 'Alamat berhasil dihapus.',
+                'message' => 'Address deleted successfully.',
             ]);
     }
 
@@ -96,7 +96,7 @@ class ProfileAddressController extends Controller
             ->route('profile.addresses.index')
             ->with('flash', [
                 'type' => 'success',
-                'message' => 'Alamat utama diperbarui.',
+                'message' => 'Default address updated.',
             ]);
     }
 

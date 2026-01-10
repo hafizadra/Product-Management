@@ -132,6 +132,22 @@
         </div>
     </div>
 
+    {{-- RECOMMENDED PRODUCTS --}}
+    @auth
+        @if (($recommendedProducts ?? collect())->isNotEmpty())
+            <div class="d-flex align-items-center justify-content-between mb-3">
+                <h2 class="h5 fw-semibold mb-0">Recommended for you</h2>
+            </div>
+            <div class="row g-3 mb-4">
+                @foreach ($recommendedProducts->take(4) as $product)
+                    <div class="col-12 col-md-6 col-lg-3">
+                        <x-product-card :product="$product" />
+                    </div>
+                @endforeach
+            </div>
+        @endif
+    @endauth
+
     {{-- LATEST PRODUCTS --}}
     <div class="d-flex align-items-center justify-content-between mb-3">
         <h2 class="h5 fw-semibold mb-0">Latest Products</h2>

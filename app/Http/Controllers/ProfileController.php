@@ -13,9 +13,9 @@ class ProfileController extends Controller
         $user = $request->user();
 
         return view('profile.edit', [
-            'user'    => $user,
-            'sidebar' => ProfileSidebar::data($user),
-            'pageTitle' => 'Ubah Profil',
+            'user'      => $user,
+            'sidebar'   => ProfileSidebar::data($user),
+            'pageTitle' => 'Edit Profile',
         ]);
     }
 
@@ -40,7 +40,7 @@ class ProfileController extends Controller
             ->route('profile.edit')
             ->with('flash', [
                 'type' => 'success',
-                'message' => 'Informasi profil berhasil diperbarui.',
+                'message' => 'Profile information updated successfully.',
             ]);
     }
 }

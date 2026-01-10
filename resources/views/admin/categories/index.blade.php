@@ -1,8 +1,14 @@
 <x-layout title="Admin · Categories">
+    <nav aria-label="breadcrumb" class="small text-muted mb-3">
+        <ol class="breadcrumb mb-0">
+            <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Dashboard</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Categories</li>
+        </ol>
+    </nav>
     <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-4">
         <div>
             <h1 class="h5 mb-1">Categories</h1>
-            <p class="text-muted small mb-0">Kelola daftar kategori produk.</p>
+            <p class="text-muted small mb-0">Organize product categories for the catalog.</p>
         </div>
 
         <a href="{{ route('admin.categories.create') }}" class="btn btn-primary btn-sm">
@@ -45,8 +51,17 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="3" class="text-center text-muted py-4">
-                                No categories yet.
+                            <td colspan="3" class="text-center text-muted py-5">
+                                <div class="mb-2">
+                                    <svg width="36" height="36" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M4 5h16v14H4z" stroke="currentColor" stroke-width="1.4"/>
+                                        <path d="M9 2v4M15 2v4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+                                    </svg>
+                                </div>
+                                <p class="small mb-2">No categories yet.</p>
+                                <a href="{{ route('admin.categories.create') }}" class="btn btn-sm btn-primary">
+                                    + Category
+                                </a>
                             </td>
                         </tr>
                     @endforelse

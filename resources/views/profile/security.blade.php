@@ -1,10 +1,10 @@
-<x-profile-layout :sidebar="$sidebar" :page-title="$pageTitle" subtitle="Perbarui password akun secara berkala untuk keamanan.">
+<x-profile-layout :sidebar="$sidebar" :page-title="$pageTitle" subtitle="Update your password regularly to keep the account secure.">
     <div class="card border-0 shadow-sm rounded-4">
         <div class="card-body p-4">
             <div class="mb-4">
-                <h2 class="h6 fw-semibold mb-1">Ganti Password</h2>
+                <h2 class="h6 fw-semibold mb-1">Change Password</h2>
                 <p class="text-muted small mb-0">
-                    Gunakan password minimal 8 karakter dengan kombinasi huruf dan angka.
+                    Use at least 8 characters with a mix of letters and numbers.
                 </p>
             </div>
 
@@ -13,7 +13,7 @@
                 @method('PUT')
 
                 <div class="col-12">
-                    <label class="form-label">Password Saat Ini</label>
+                    <label class="form-label">Current Password</label>
                     <input
                         type="password"
                         name="current_password"
@@ -26,7 +26,7 @@
                 </div>
 
                 <div class="col-md-6">
-                    <label class="form-label">Password Baru</label>
+                    <label class="form-label">New Password</label>
                     <input
                         type="password"
                         name="password"
@@ -39,7 +39,7 @@
                 </div>
 
                 <div class="col-md-6">
-                    <label class="form-label">Konfirmasi Password Baru</label>
+                    <label class="form-label">Confirm New Password</label>
                     <input
                         type="password"
                         name="password_confirmation"
@@ -50,7 +50,7 @@
 
                 <div class="col-12 d-flex justify-content-end">
                     <button class="btn btn-primary px-4">
-                        Simpan Password
+                        Save Password
                     </button>
                 </div>
             </form>

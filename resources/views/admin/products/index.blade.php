@@ -1,9 +1,15 @@
 <x-layout title="Admin · Inventory">
+    <nav aria-label="breadcrumb" class="small text-muted mb-3">
+        <ol class="breadcrumb mb-0">
+            <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Dashboard</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Products</li>
+        </ol>
+    </nav>
     <div class="d-flex flex-column flex-md-row justify-content-between gap-2 mb-4">
         <div>
             <h1 class="h5 mb-1">Inventory Management</h1>
             <p class="text-muted mb-0 small">
-                Kelola stok, harga, dan detail produk yang tampil di katalog.
+                Manage stock levels, pricing, and catalog details from one place.
             </p>
         </div>
 
@@ -13,21 +19,21 @@
                 class="btn btn-outline-secondary btn-sm px-2 py-0"
                 style="min-height: 28px;"
             >
-                Kelola pesanan
+                Manage orders
             </a>
             <a
                 href="{{ route('admin.products.create') }}"
                 class="btn btn-primary btn-sm px-2 py-0"
                 style="min-height: 28px;"
             >
-                + Produk baru
+                + New product
             </a>
         </div>
     </div>
 
     @if ($errors->any())
         <div class="alert alert-danger small">
-            <strong>Gagal memperbarui data:</strong>
+            <strong>Failed to update data:</strong>
             <ul class="mb-0 mt-1">
                 @foreach ($errors->all() as $error)
                     <li>{{ $error }}</li>
@@ -79,11 +85,11 @@
                         <table class="table table-hover align-middle mb-0 small">
                             <thead class="table-light">
                                 <tr>
-                                    <th>Produk</th>
-                                    <th>Kategori</th>
-                                    <th>Harga</th>
-                                    <th class="w-25">Stok</th>
-                                    <th class="text-end">Aksi</th>
+                                    <th>Product</th>
+                                    <th>Category</th>
+                                    <th>Price</th>
+                                    <th class="w-25">Stock</th>
+                                    <th class="text-end">Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -126,11 +132,11 @@
                                                 >
 
                                                 <button type="submit" class="btn btn-outline-primary btn-sm">
-                                                    Simpan
+                                                    Save
                                                 </button>
                                             </form>
                                             <small class="text-muted">
-                                                Diperbarui {{ $product->updated_at?->diffForHumans() }}
+                                                Updated {{ $product->updated_at?->diffForHumans() }}
                                             </small>
                                             @if ($product->stock <= 5)
                                                 <span class="badge text-bg-warning ms-1">Low</span>
@@ -148,7 +154,7 @@
                                                 <form
                                                     action="{{ route('admin.products.destroy', $product) }}"
                                                     method="POST"
-                                                    onsubmit="return confirm('Hapus produk ini?');"
+                                                    onsubmit="return confirm('Delete this product?');"
                                                 >
                                                     @csrf
                                                     @method('DELETE')
@@ -161,8 +167,17 @@
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="5" class="text-center text-muted py-4">
-                                            Belum ada produk. Tambahkan produk pertama sekarang.
+                                        <td colspan="5" class="text-center text-muted py-5">
+                                            <div class="mb-2">
+                                                <svg width="36" height="36" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                    <path d="M4 7h16v11a1 1 0 01-1 1H5a1 1 0 01-1-1V7z" stroke="currentColor" stroke-width="1.4"/>
+                                                    <path d="M8 7V5a4 4 0 018 0v2" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+                                                </svg>
+                                            </div>
+                                            <p class="small mb-2">No products yet. Add the first product now.</p>
+                                            <a href="{{ route('admin.products.create') }}" class="btn btn-sm btn-primary">
+                                                + New product
+                                            </a>
                                         </td>
                                     </tr>
                                 @endforelse
@@ -198,7 +213,7 @@
                             </a>
                         </div>
                     @empty
-                        <p class="text-muted small mb-0">Belum ada order.</p>
+                        <p class="text-muted small mb-0">No orders yet.</p>
                     @endforelse
                 </div>
             </div>
