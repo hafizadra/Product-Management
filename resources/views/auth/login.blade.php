@@ -14,6 +14,12 @@
                     <form method="POST" action="{{ route('login') }}">
                         @csrf
 
+                        @if (session('status'))
+                            <div class="alert alert-success mt-2 mb-3" data-flash>
+                                {{ session('status') }}
+                            </div>
+                        @endif
+
                         {{-- Email --}}
                         <div class="mb-3">
                             <label for="email" class="form-label">Email Address</label>
@@ -38,14 +44,35 @@
                         {{-- Password --}}
                         <div class="mb-3">
                             <label for="password" class="form-label">Password</label>
-                            <input
-                                id="password"
-                                type="password"
-                                class="form-control @error('password') is-invalid @enderror"
-                                name="password"
-                                required
-                                autocomplete="current-password"
-                            >
+                            <div class="position-relative">
+                                <input
+                                    id="password"
+                                    type="password"
+                                    class="form-control pe-5 @error('password') is-invalid @enderror"
+                                    name="password"
+                                    required
+                                    autocomplete="current-password"
+                                >
+                                <button
+                                    type="button"
+                                    class="btn btn-sm btn-link position-absolute end-0 password-toggle text-secondary"
+                                    aria-label="Show password"
+                                    style="top: 50%; transform: translateY(-50%);"
+                                >
+                                    <span class="toggle-open">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24">
+                                            <path d="M12 5c-5 0-9 5-9 7s4 7 9 7 9-5 9-7-4-7-9-7Zm0 11a4 4 0 1 1 0-8 4 4 0 0 1 0 8Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+                                            <circle cx="12" cy="12" r="2" fill="currentColor"/>
+                                        </svg>
+                                    </span>
+                                    <span class="toggle-closed d-none">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24">
+                                            <path d="M3 3l18 18" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                                            <path d="M4 6.8C5.7 5.1 8.4 4 12 4c5 0 9 5 9 7 0 1.1-1 2.8-2.6 4.2M14.1 14.1a3 3 0 0 1-4.2-4.2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                        </svg>
+                                    </span>
+                                </button>
+                            </div>
 
                             @error('password')
                                 <div class="invalid-feedback">
@@ -107,6 +134,27 @@
         .link-primary-hover:hover,
         .link-primary-hover:active,
         .link-primary-hover:focus { color: #0d6efd !important; }
+        .password-toggle { text-decoration: none; }
     </style>
+    <script>
+        (() => {
+            const toggleBtn = document.querySelector('.password-toggle');
+            const input = document.getElementById('password');
+            const openIcon = toggleBtn?.querySelector('.toggle-open');
+            const closedIcon = toggleBtn?.querySelector('.toggle-closed');
+            if (!toggleBtn || !input) return;
+
+            toggleBtn.addEventListener('click', () => {
+                const hidden = input.type === 'password';
+                input.type = hidden ? 'text' : 'password';
+                toggleBtn.setAttribute('aria-label', hidden ? 'Hide password' : 'Show password');
+                toggleBtn.classList.toggle('text-primary', hidden);
+                if (openIcon && closedIcon) {
+                    openIcon.classList.toggle('d-none', hidden);
+                    closedIcon.classList.toggle('d-none', !hidden);
+                }
+            });
+        })();
+    </script>
 
 </x-layout>

@@ -205,22 +205,32 @@
         <div id="global-flash" class="alert alert-{{ $flash['type'] ?? 'info' }} shadow-sm border-0" role="alert" data-flash>
             {{ $flash['message'] ?? '' }}
         </div>
-        <script>
-            setTimeout(() => {
-                const alert = document.querySelector('[data-flash]');
-                if (!alert) return;
-                alert.style.transition = 'opacity 0.3s, transform 0.3s';
-                alert.style.opacity = '0';
-                alert.style.transform = 'translateY(-6px)';
-                setTimeout(() => alert.remove(), 300);
-            }, 1000);
-        </script>
     @endif
 
     {{ $slot }}
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    (function () {
+        const hideFlash = () => {
+            setTimeout(() => {
+                document.querySelectorAll('[data-flash]').forEach((el) => {
+                    el.style.transition = 'opacity 0.3s, transform 0.3s';
+                    el.style.opacity = '0';
+                    el.style.transform = 'translateY(-6px)';
+                    setTimeout(() => el.remove(), 300);
+                });
+            }, 1000);
+        };
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', hideFlash);
+        } else {
+            hideFlash();
+        }
+    })();
+</script>
 @auth
     @if (Auth::user()->is_admin)
         <script>

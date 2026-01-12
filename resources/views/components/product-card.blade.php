@@ -1,11 +1,13 @@
 @props(['product'])
 
 <style>
-    .product-card { cursor: pointer; }
+    .product-card { cursor: pointer; transition: transform 0.18s ease, box-shadow 0.18s ease; }
     .product-card:hover {
-        transform: translateY(-2px);
-        transition: 0.2s ease;
-        box-shadow: 0 0.75rem 1.5rem rgba(0,0,0,.08);
+        transform: translateY(-3px);
+        box-shadow: 0 0.75rem 1.6rem rgba(0,0,0,.10);
+    }
+    .product-card:active {
+        transform: translateY(-1px) scale(0.997);
     }
 </style>
 
@@ -19,8 +21,8 @@
             <img
                 src="{{ $product->image_url }}"
                 alt="{{ $product->name }}"
-                class="img-fluid rounded mb-3"
-                style="max-height: 160px; object-fit: cover;"
+                class="img-fluid rounded mb-3 w-100"
+                style="height: 160px; object-fit: cover;"
             >
         @endif
 

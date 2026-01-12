@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use App\Models\Product;
 use App\Models\Category;
 use App\Models\OrderItem;
@@ -107,8 +108,8 @@ class ProductController extends Controller
 
         $userReview = null;
         $canReview = false;
-        if (auth()->check()) {
-            $userId = auth()->id();
+        if (Auth::check()) {
+            $userId = Auth::id();
             $userReview = $reviews->firstWhere('user_id', $userId);
 
             $eligibleStatuses = ['completed'];

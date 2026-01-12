@@ -5,6 +5,8 @@ namespace Database\Seeders;
 use Illuminate\Database\Seeder;
 use App\Models\Category;
 use App\Models\Product;
+use App\Models\User;
+use Illuminate\Support\Facades\Hash;
 
 class DatabaseSeeder extends Seeder
 {
@@ -26,5 +28,8 @@ class DatabaseSeeder extends Seeder
         Product::factory()
             ->count(30) 
             ->create();  
+
+        // Admin account (default)
+        $this->call(AdminUserSeeder::class);
     }
 }
