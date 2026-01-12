@@ -222,12 +222,30 @@
         </div>
     @endif
 
-    {{-- FOOTER NOTE --}}
-    <div class="mt-4 text-muted small">
-        @auth
-            You are logged in. Happy shopping!
-        @else
-            You are browsing as guest. Login to checkout and view order history.
-        @endauth
-    </div>
+    {{-- FOOTER --}}
+    <footer class="mt-5 p-4 rounded-4" style="background-color: var(--nav-bg); color: var(--nav-text);">
+        <div class="row g-4 small align-items-start">
+            <div class="col-md-4">
+                <h6 class="fw-semibold mb-3">Need help?</h6>
+                <p class="mb-1">Email: support@aleef.com</p>
+                <p class="mb-1">Phone: +62 812 3456 7890</p>
+                <p class="mb-0">Jl. Contoh No. 123, Jakarta</p>
+            </div>
+            <div class="col-md-4">
+                <h6 class="fw-semibold mb-3">Company</h6>
+                <a href="#" class="text-decoration-none text-white-50 d-block mb-1">Privacy Policy</a>
+                <a href="#" class="text-decoration-none text-white-50 d-block mb-1">Terms & Conditions</a>
+                <a href="#" class="text-decoration-none text-white-50 d-block">FAQ & Support</a>
+            </div>
+            <div class="col-md-4">
+                <h6 class="fw-semibold mb-3">Follow us</h6>
+                <div class="d-flex gap-3">
+                    <a href="#" class="text-decoration-none text-white-50">Instagram</a>
+                    <a href="#" class="text-decoration-none text-white-50">Facebook</a>
+                    <a href="#" class="text-decoration-none text-white-50">Twitter</a>
+                </div>
+                <p class="mt-3 mb-0 text-white-50">&copy; {{ date('Y') }} Aleef. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
 </x-layout>
