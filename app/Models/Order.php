@@ -12,6 +12,7 @@ class Order extends Model
         'payment_method',
         'subtotal',
         'total',
+        'status',
     ];
 
     /**

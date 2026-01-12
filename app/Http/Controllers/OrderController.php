@@ -31,6 +31,11 @@ class OrderController extends Controller
 
         $order->load('items.product');
 
-        return view('orders.show', compact('order'));
+        $timelineStatuses = ['pending', 'paid', 'processing', 'shipped', 'completed'];
+        if ($order->status === 'cancelled' && !in_array('cancelled', $timelineStatuses, true)) {
+            $timelineStatuses[] = 'cancelled';
+        }
+
+        return view('orders.show', compact('order', 'timelineStatuses'));
     }
 }

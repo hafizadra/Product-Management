@@ -22,12 +22,18 @@
                     </a>
 
                     @auth
-                        <a href="{{ route('cart.index') }}" class="btn btn-outline-light">
-                            View Cart
-                        </a>
-                        <a href="{{ route('orders.index') }}" class="btn btn-outline-light">
-                            My Orders
-                        </a>
+                        @if (Auth::user()->is_admin)
+                            <a href="{{ route('admin.dashboard') }}" class="btn btn-outline-light">
+                                Open Admin
+                            </a>
+                        @else
+                            <a href="{{ route('cart.index') }}" class="btn btn-outline-light">
+                                View Cart
+                            </a>
+                            <a href="{{ route('orders.index') }}" class="btn btn-outline-light">
+                                My Orders
+                            </a>
+                        @endif
                     @else
                         <a href="{{ route('login') }}" class="btn btn-outline-light">
                             Login
@@ -126,6 +132,22 @@
         </div>
     </div>
 
+    {{-- RECOMMENDED PRODUCTS --}}
+    @auth
+        @if (($recommendedProducts ?? collect())->isNotEmpty())
+            <div class="d-flex align-items-center justify-content-between mb-3">
+                <h2 class="h5 fw-semibold mb-0">Recommended for you</h2>
+            </div>
+            <div class="row g-3 mb-4">
+                @foreach ($recommendedProducts->take(4) as $product)
+                    <div class="col-12 col-md-6 col-lg-3">
+                        <x-product-card :product="$product" />
+                    </div>
+                @endforeach
+            </div>
+        @endif
+    @endauth
+
     {{-- LATEST PRODUCTS --}}
     <div class="d-flex align-items-center justify-content-between mb-3">
         <h2 class="h5 fw-semibold mb-0">Latest Products</h2>
@@ -146,6 +168,15 @@
                 <div class="col-12 col-md-6 col-lg-3">
                     <div class="card border-0 shadow-sm rounded-4 h-100">
                         <div class="card-body p-4 d-flex flex-column">
+
+                            @if ($p->image_url)
+                                <img
+                                    src="{{ $p->image_url }}"
+                                    alt="{{ $p->name }}"
+                                    class="img-fluid rounded mb-3"
+                                    style="max-height: 160px; object-fit: cover;"
+                                >
+                            @endif
 
                             <div class="d-flex justify-content-between align-items-start">
                                 <div>
@@ -173,7 +204,12 @@
                                 <div class="fw-semibold">
                                     Rp {{ number_format($p->price ?? 0) }}
                                 </div>
-
+                                <div class="text-muted small text-end">
+                                    <div>{{ $p->author ?? 'Unknown author' }}</div>
+                                    @if ($p->isbn)
+                                        <div>ISBN: {{ $p->isbn }}</div>
+                                    @endif
+                                </div>
                                 <a href="{{ route('products.show', $p->id) }}" class="btn btn-sm btn-outline-primary">
                                     Details
                                 </a>
@@ -186,12 +222,30 @@
         </div>
     @endif
 
-    {{-- FOOTER NOTE --}}
-    <div class="mt-4 text-muted small">
-        @auth
-            You are logged in. Happy shopping!
-        @else
-            You are browsing as guest. Login to checkout and view order history.
-        @endauth
-    </div>
+    {{-- FOOTER --}}
+    <footer class="mt-5 p-4 rounded-4" style="background-color: var(--nav-bg); color: var(--nav-text);">
+        <div class="row g-4 small align-items-start">
+            <div class="col-md-4">
+                <h6 class="fw-semibold mb-3">Need help?</h6>
+                <p class="mb-1">Email: support@aleef.com</p>
+                <p class="mb-1">Phone: +62 812 3456 7890</p>
+                <p class="mb-0">Jl. Contoh No. 123, Jakarta</p>
+            </div>
+            <div class="col-md-4">
+                <h6 class="fw-semibold mb-3">Company</h6>
+                <a href="#" class="text-decoration-none text-white-50 d-block mb-1">Privacy Policy</a>
+                <a href="#" class="text-decoration-none text-white-50 d-block mb-1">Terms & Conditions</a>
+                <a href="#" class="text-decoration-none text-white-50 d-block">FAQ & Support</a>
+            </div>
+            <div class="col-md-4">
+                <h6 class="fw-semibold mb-3">Follow us</h6>
+                <div class="d-flex gap-3">
+                    <a href="#" class="text-decoration-none text-white-50">Instagram</a>
+                    <a href="#" class="text-decoration-none text-white-50">Facebook</a>
+                    <a href="#" class="text-decoration-none text-white-50">Twitter</a>
+                </div>
+                <p class="mt-3 mb-0 text-white-50">&copy; {{ date('Y') }} Aleef. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
 </x-layout>

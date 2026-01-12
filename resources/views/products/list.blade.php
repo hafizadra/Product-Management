@@ -1,96 +1,149 @@
-
-
 <x-layout title="Product List">
 
     {{-- HEADER --}}
     <div class="d-flex justify-content-between align-items-center mb-2">
         <h1 class="h6 mb-0">Products</h1>
 
-        <a href="{{ route('products.create') }}" class="btn btn-sm btn-primary">
-            Add new product
-        </a>
+        @if (auth()->user()?->is_admin)
+            <a href="{{ route('admin.products.index') }}" class="btn btn-sm btn-outline-secondary">
+                Kelola stok
+            </a>
+        @endif
     </div>
 
     {{-- FILTER DAN SEARCH --}}
-    <form 
-        method="GET" 
-        action="{{ route('products') }}" 
-        class="border-bottom pb-3 mb-3"
-    >
-        <div class="row g-2 align-items-center small">
+    @php
+        $activeFilters = [
+            $search ? "Search: $search" : null,
+            $minPrice ? "Min Rp $minPrice" : null,
+            $maxPrice ? "Max Rp $maxPrice" : null,
+            $categoryId ? 'Category: ' . optional($categories->firstWhere('id', (int) $categoryId))->name : null,
+            $author ? "Author: $author" : null,
+            $publisher ? "Publisher: $publisher" : null,
+            $isbn ? "ISBN: $isbn" : null,
+        ];
+        $activeFilters = array_values(array_filter($activeFilters));
+    @endphp
+    <div class="card border-0 shadow-sm rounded-4 mb-4">
+        <div class="card-body">
+            <form method="GET" action="{{ route('products') }}" class="vstack gap-4">
+                <div class="d-flex flex-wrap justify-content-between gap-2 align-items-center">
+                    <div>
+                        <p class="text-muted small mb-1">Refine results</p>
+                        <h2 class="h6 mb-0">Filter Products</h2>
+                    </div>
+                    <div class="d-flex gap-2">
+                        <a href="{{ route('products') }}" class="btn btn-outline-secondary btn-sm">
+                            Reset
+                        </a>
+                        <button type="submit" class="btn btn-primary btn-sm">
+                            Apply filters
+                        </button>
+                    </div>
+                </div>
 
-            {{-- SEARCH --}}
-            <div class="col-12 col-md-4">
-                <label class="form-label mb-1">Search</label>
-                <input 
-                    type="text" 
-                    name="q" 
-                    class="form-control form-control-sm"
-                    placeholder="Name or description"
-                    value="{{ $search }}"
-                >
-            </div>
+                @if ($activeFilters)
+                    <div class="d-flex flex-wrap gap-2">
+                        @foreach ($activeFilters as $label)
+                            <span class="badge text-bg-light border rounded-pill px-3 py-2 small">
+                                {{ $label }}
+                            </span>
+                        @endforeach
+                    </div>
+                @endif
 
-            {{-- MIN PRICE --}}
-            <div class="col-6 col-md-2">
-                <label class="form-label mb-1">Min price</label>
-                <input 
-                    type="number" 
-                    name="min_price" 
-                    class="form-control form-control-sm"
-                    min="0"
-                    value="{{ $minPrice }}"
-                >
-            </div>
+                <div class="row g-3">
+                    <div class="col-12 col-md-4">
+                        <label class="form-label small text-muted">Search</label>
+                        <div class="input-group input-group-sm">
+                            <span class="input-group-text bg-transparent border-end-0">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="1.4"/>
+                                    <path d="M16 16l4 4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+                                </svg>
+                            </span>
+                            <input type="text" name="q" class="form-control border-start-0" placeholder="Name or description" value="{{ $search }}">
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-2">
+                        <label class="form-label small text-muted">Min price</label>
+                        <input type="number" name="min_price" class="form-control form-control-sm" min="0" value="{{ $minPrice }}">
+                    </div>
+                    <div class="col-6 col-md-2">
+                        <label class="form-label small text-muted">Max price</label>
+                        <input type="number" name="max_price" class="form-control form-control-sm" min="0" value="{{ $maxPrice }}">
+                    </div>
+                    <div class="col-6 col-md-2">
+                        <label class="form-label small text-muted">Category</label>
+                        <select name="category_id" class="form-select form-select-sm">
+                            <option value="">All</option>
+                            @foreach ($categories as $cat)
+                                <option value="{{ $cat->id }}" {{ (string)$categoryId === (string)$cat->id ? 'selected' : '' }}>
+                                    {{ $cat->name }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="col-6 col-md-1">
+                        <label class="form-label small text-muted">Sort by</label>
+                        <select name="sort_by" class="form-select form-select-sm">
+                            <option value="name"  {{ $sortBy === 'name' ? 'selected' : '' }}>Name</option>
+                            <option value="price" {{ $sortBy === 'price' ? 'selected' : '' }}>Price</option>
+                        </select>
+                    </div>
+                    <div class="col-6 col-md-1">
+                        <label class="form-label small text-muted">Order</label>
+                        <select name="sort_dir" class="form-select form-select-sm">
+                            <option value="asc"  {{ $sortDir === 'asc' ? 'selected' : '' }}>Asc</option>
+                            <option value="desc" {{ $sortDir === 'desc' ? 'selected' : '' }}>Desc</option>
+                        </select>
+                    </div>
+                </div>
 
-            {{-- MAX PRICE --}}
-            <div class="col-6 col-md-2">
-                <label class="form-label mb-1">Max price</label>
-                <input 
-                    type="number" 
-                    name="max_price" 
-                    class="form-control form-control-sm"
-                    min="0"
-                    value="{{ $maxPrice }}"
-                >
-            </div>
-
-            {{-- SORT BY --}}
-            <div class="col-6 col-md-2">
-                <label class="form-label mb-1">Sort by</label>
-                <select name="sort_by" class="form-select form-select-sm">
-                    <option value="name"  {{ $sortBy === 'name' ? 'selected' : '' }}>Name</option>
-                    <option value="price" {{ $sortBy === 'price' ? 'selected' : '' }}>Price</option>
-                </select>
-            </div>
-
-            {{-- ORDER --}}
-            <div class="col-6 col-md-2">
-                <label class="form-label mb-1">Order</label>
-                <select name="sort_dir" class="form-select form-select-sm">
-                    <option value="asc"  {{ $sortDir === 'asc' ? 'selected' : '' }}>Asc</option>
-                    <option value="desc" {{ $sortDir === 'desc' ? 'selected' : '' }}>Desc</option>
-                </select>
-            </div>
+                <div class="row g-3">
+                    <div class="col-12 col-md-4">
+                        <label class="form-label small text-muted">Author</label>
+                        <input type="text" name="author" class="form-control form-control-sm" placeholder="e.g. Tere Liye" value="{{ $author }}">
+                    </div>
+                    <div class="col-6 col-md-4">
+                        <label class="form-label small text-muted">Publisher</label>
+                        <input type="text" name="publisher" class="form-control form-control-sm" placeholder="Publisher name" value="{{ $publisher }}">
+                    </div>
+                    <div class="col-6 col-md-4">
+                        <label class="form-label small text-muted">ISBN</label>
+                        <input type="text" name="isbn" class="form-control form-control-sm" placeholder="978..." value="{{ $isbn }}">
+                    </div>
+                </div>
+            </form>
         </div>
-
-        <div class="d-flex justify-content-end gap-2 mt-2 small">
-            <a href="{{ route('products') }}" class="btn btn-sm btn-outline-secondary">
-                Reset
-            </a>
-            <button type="submit" class="btn btn-sm btn-primary">
-                Apply
-            </button>
-        </div>
-    </form>
+    </div>
 
     {{-- INFO RINGKAS --}}
-    <div class="d-flex justify-content-between align-items-center mb-3 small text-muted">
-        <div>
-            {{ $products->count() }} product(s) found
-        </div>
-        <div>
-            Sort: {{ ucfirst($sortBy) }} / {{ strtoupper($sortDir) }}
+    <div class="card border-0 shadow-sm rounded-4 mb-4">
+        <div class="card-body d-flex flex-wrap justify-content-between align-items-center gap-3 small text-muted">
+            <div class="d-flex align-items-center gap-2">
+                <span class="badge text-bg-primary-subtle text-primary rounded-pill px-3 py-2">
+                    {{ $products->count() }} result{{ $products->count() === 1 ? '' : 's' }}
+                </span>
+                <div>
+                    Showing items based on your filters.
+                </div>
+            </div>
+            <div class="text-muted">
+                Sort: <strong>{{ ucfirst($sortBy) }}</strong> / <strong>{{ strtoupper($sortDir) }}</strong>
+                @if(!empty($categoryId))
+                    <span class="ms-2">Category: {{ optional($categories->firstWhere('id', (int)$categoryId))->name ?? 'Selected' }}</span>
+                @endif
+                @if($author)
+                    <span class="ms-2">Author: {{ $author }}</span>
+                @endif
+                @if($publisher)
+                    <span class="ms-2">Publisher: {{ $publisher }}</span>
+                @endif
+                @if($isbn)
+                    <span class="ms-2">ISBN: {{ $isbn }}</span>
+                @endif
+            </div>
         </div>
     </div>
 

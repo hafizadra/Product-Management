@@ -8,6 +8,8 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use App\Models\Cart;
 use App\Models\Order;
+use App\Models\Wishlist;
+use App\Models\UserAddress;
 
 class User extends Authenticatable
 {
@@ -23,6 +25,12 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'phone',
+        'default_shipping_address',
+        'payment_account_name',
+        'payment_card_number',
+        'payment_card_expiry',
+        'payment_card_cvc',
     ];
 
     /**
@@ -41,6 +49,7 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'is_admin' => 'boolean',
         ];
     }
     /**
@@ -57,5 +66,15 @@ class User extends Authenticatable
     public function orders()
     {
         return $this->hasMany(Order::class);
+    }
+
+    public function wishlist()
+    {
+        return $this->hasMany(Wishlist::class);
+    }
+
+    public function addresses()
+    {
+        return $this->hasMany(UserAddress::class);
     }
 }

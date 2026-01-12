@@ -30,14 +30,55 @@
             <div class="collapse navbar-collapse" id="navbarMain">
                 {{-- Left --}}
                 <ul class="navbar-nav me-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ route('products') }}">Products</a>
-                    </li>
+                    @if (!Auth::check() || !Auth::user()->is_admin)
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('products') }}">Products</a>
+                        </li>
+                    @endif
 
                     @auth
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ route('cart.index') }}">Cart</a>
-                        </li>
+                        @if (Auth::user()->is_admin)
+                            <li class="nav-item">
+                                <a
+                                    class="nav-link {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}"
+                                    href="{{ route('admin.dashboard') }}"
+                                >
+                                    Inventory
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a
+                                    class="nav-link {{ request()->routeIs('admin.orders.*') ? 'active' : '' }}"
+                                    href="{{ route('admin.orders.index') }}"
+                                >
+                                    Manage Orders
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a
+                                    class="nav-link {{ request()->routeIs('admin.categories.*') ? 'active' : '' }}"
+                                    href="{{ route('admin.categories.index') }}"
+                                >
+                                    Categories
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a
+                                    class="nav-link {{ request()->routeIs('admin.users.*') ? 'active' : '' }}"
+                                    href="{{ route('admin.users.index') }}"
+                                >
+                                    Users
+                                </a>
+                            </li>
+                        @endif
+                    @endauth
+
+                    @auth
+                        @if (!request()->routeIs('admin.*') && !Auth::user()->is_admin)
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ route('cart.index') }}">Cart</a>
+                            </li>
+                        @endif
                     @endauth
                 </ul>
 
@@ -77,23 +118,6 @@
     <main class="py-4">
         <div class="container">
             {{-- Flash success --}}
-            @if (session('success'))
-                <div id="success-alert" class="alert alert-success">
-                    {{ session('success') }}
-                </div>
-
-                <script>
-                    setTimeout(() => {
-                        const alert = document.getElementById('success-alert');
-                        if (alert) {
-                            alert.style.transition = "opacity 0.5s";
-                            alert.style.opacity = "0";
-                            setTimeout(() => alert.remove(), 500);
-                        }
-                    }, 1500);
-                </script>
-            @endif
-
             @yield('content')
         </div>
     </main>

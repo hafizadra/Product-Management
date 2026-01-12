@@ -23,9 +23,17 @@ class CartController extends Controller
         return view('cart.index', compact('cart', 'subtotal', 'total'));
     }
 
-    public function add(Product $product)
+    public function add(Request $request, Product $product)
     {
         $userId = Auth::id();
+
+        if ($product->stock < 1) {
+            return $this->respondCart(
+                $request,
+                false,
+                sprintf('"%s" is currently out of stock.', $product->name)
+            );
+        }
 
         $cart = Cart::firstOrCreate(['user_id' => $userId]);
 
@@ -33,8 +41,18 @@ class CartController extends Controller
             ->where('product_id', $product->id)
             ->first();
 
+        $desiredQty = ($item?->qty ?? 0) + 1;
+
+        if ($desiredQty > $product->stock) {
+            return $this->respondCart(
+                $request,
+                false,
+                'Stock is not sufficient for "' . $product->name . '".'
+            );
+        }
+
         if ($item) {
-            $item->increment('qty');
+            $item->update(['qty' => $desiredQty]);
         } else {
             CartItem::create([
                 'cart_id'    => $cart->id,
@@ -44,7 +62,11 @@ class CartController extends Controller
             ]);
         }
 
-        return redirect()->route('cart.index')->with('success', 'Product added to cart.');
+        return $this->respondCart(
+            $request,
+            true,
+            sprintf('"%s" added to cart.', $product->name)
+        );
     }
 
     public function update(Request $request, CartItem $item)
@@ -53,13 +75,31 @@ class CartController extends Controller
 
         abort_unless($item->cart->user_id === $userId, 403);
 
-        $request->validate([
+        $data = $request->validate([
             'qty' => ['required', 'integer', 'min:1', 'max:999'],
         ]);
 
-        $item->update(['qty' => $request->qty]);
+        $item->loadMissing('product');
 
-        return redirect()->route('cart.index')->with('success', 'Cart updated.');
+        if (!$item->product) {
+            $item->delete();
+
+            return redirect()
+                ->route('cart.index')
+                ->with('error', 'Produk tidak ditemukan dan telah dihapus dari cart.');
+        }
+
+        if ($item->product && $data['qty'] > $item->product->stock) {
+            return redirect()
+                ->route('cart.index')
+                ->with('error', 'Stok untuk "' . $item->product->name . '" tidak mencukupi.');
+        }
+
+        $item->update(['qty' => $data['qty']]);
+
+        return redirect()
+            ->route('cart.index')
+            ->with('success', 'Cart updated.');
     }
 
     public function remove(CartItem $item)
@@ -70,6 +110,22 @@ class CartController extends Controller
 
         $item->delete();
 
-        return redirect()->route('cart.index')->with('success', 'Item removed.');
+        return redirect()
+            ->route('cart.index')
+            ->with('success', 'Item removed.');
+    }
+
+    protected function respondCart(Request $request, bool $success, string $message)
+    {
+        if ($request->expectsJson() || $request->ajax()) {
+            return response()->json([
+                'message' => $message,
+            ], $success ? 200 : 422);
+        }
+
+        $key = $success ? 'success' : 'error';
+        $redirect = $success ? redirect()->route('cart.index') : redirect()->back();
+
+        return $redirect->with($key, $message);
     }
 }
